@@ -1,9 +1,11 @@
 # FakeNameGenerator API
-API for www.FakeNameGenerator.com
-This repo is the project used to test the API. 
-The API can be found [here](https://github.com/regnatmalum/FakeNameGenerator/blob/master/FakeNameGenerator/FakeNameGenerator.cs).
+
+This repo is the project used to test the API.
+
+The API itself can be found [here](https://github.com/regnatmalum/FakeNameGenerator/blob/master/FakeNameGenerator/FakeNameGenerator.cs).
 
 You can change the name set, which is the origin the name will come from (ex: Brazil, China, etc)
+
 You can change the country, which is the origin of the address, occupation, etc.
 
 ###### **Usage**
