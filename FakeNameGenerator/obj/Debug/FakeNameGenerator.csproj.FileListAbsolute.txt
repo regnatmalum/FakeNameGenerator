@@ -4,3 +4,6 @@ c:\users\admin\desktop\programming\net\FakeNameGenerator\FakeNameGenerator\bin\D
 c:\users\admin\desktop\programming\net\FakeNameGenerator\FakeNameGenerator\bin\Debug\FakeNameGenerator.pdb
 c:\users\admin\desktop\programming\net\FakeNameGenerator\FakeNameGenerator\obj\Debug\FakeNameGenerator.exe
 c:\users\admin\desktop\programming\net\FakeNameGenerator\FakeNameGenerator\obj\Debug\FakeNameGenerator.pdb
+C:\Users\Admin\Desktop\FakeNameGenerator\FakeNameGenerator\bin\Debug\FakeNameGenerator.exe.config
+C:\Users\Admin\Desktop\FakeNameGenerator\FakeNameGenerator\obj\Debug\FakeNameGenerator.exe
+C:\Users\Admin\Desktop\FakeNameGenerator\FakeNameGenerator\obj\Debug\FakeNameGenerator.pdb

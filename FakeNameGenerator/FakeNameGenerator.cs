@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace FakeNameGenerator
 {
@@ -116,7 +112,7 @@ namespace FakeNameGenerator
         public FakeNameGeneratorAPI() { }
 
         #region Enum Handling
-        public string GetCountry(Country c)
+        private string GetCountry(Country c)
         {
             switch (c)
             {
@@ -256,98 +252,126 @@ namespace FakeNameGenerator
         #endregion
 
         #region Create Identity
+        /// <summary>
+        /// Returns new Identity with default settings.
+        /// </summary>
+        /// <returns>Identity</returns>
         public Identity CreateIdentity()
         {
             return CreateIdentity(Gender.Male, NameSet.American, Country.UnitedStates);
         }
 
+        /// <summary>
+        /// Returns new Identity with gender settings.
+        /// </summary>
+        /// <param name="g">Male or Female</param>
+        /// <returns>Identity</returns>
         public Identity CreateIdentity(Gender g)
         {
             return CreateIdentity(g, NameSet.American, Country.UnitedStates);
         }
 
+        /// <summary>
+        /// Returns new Identity with gender and nameset settings.
+        /// </summary>
+        /// <param name="g">Male or Female</param>
+        /// <param name="ns">Country origin for name.</param>
+        /// <returns>Identity</returns>
         public Identity CreateIdentity(Gender g, NameSet ns)
         {
             return CreateIdentity(g, ns, Country.UnitedStates);
         }
 
+        /// <summary>
+        /// Returns new Identity with gender, nameset, and country settings.
+        /// </summary>
+        /// <param name="g">Male or Female</param>
+        /// <param name="ns">Country origin for name.</param>
+        /// <param name="c">Country origin for Identity.</param>
+        /// <returns>Identity</returns>
         public Identity CreateIdentity(Gender g, NameSet ns, Country c)
         {
             Identity id = new Identity();
-
-            using (WebClient wClient = new WebClient())
+            try
             {
-                string html_source = wClient.DownloadString("http://www.fakenamegenerator.com" + String.Format("/gen-{0}-{1}-{2}.php", (g == Gender.Male) ? "male" : "female", GetNameSet(ns), GetCountry(c)));
+                using (WebClient wClient = new WebClient())
+                {
+                    string html_source = wClient.DownloadString("http://www.fakenamegenerator.com" + String.Format("/gen-{0}-{1}-{2}.php", (g == Gender.Male) ? "male" : "female", GetNameSet(ns), GetCountry(c)));
 
-                Match m = Regex.Match(html_source, "<h3>(.*?)<");
-                id.Name = m.Groups[1].Value;
+                    Match m = Regex.Match(html_source, "<h3>(.*?)<");
+                    id.Name = m.Groups[1].Value;
 
-                m = Regex.Match(html_source, "\"adr\">\n(.*?)<");
-                string street = m.Groups[1].Value.Trim();
+                    m = Regex.Match(html_source, "\"adr\">\n(.*?)<");
+                    string street = m.Groups[1].Value.Trim();
 
-                m = Regex.Match(html_source, ".<br.>(.*?)<.div>");
-                id.Address = (street + " " + m.Groups[1].Captures[0].Value.Trim());
-                //Lazy bug fix
-                if (id.Address.Contains("</br>") || id.Address.Contains("<br>"))
-                    id.Address = id.Address.Remove(id.Address.IndexOf('<'), 5);
+                    m = Regex.Match(html_source, ".<br.>(.*?)<.div>");
+                    id.Address = (street + " " + m.Groups[1].Captures[0].Value.Trim());
+                    //Lazy bug fix
+                    if (id.Address.Contains("</br>") || id.Address.Contains("<br>"))
+                        id.Address = id.Address.Remove(id.Address.IndexOf('<'), 5);
 
-                m = Regex.Match(html_source, "<.dt>\\n\\s*<dd>(.*)<.");
-                id.MaidenName = m.Groups[1].Value;
+                    m = Regex.Match(html_source, "<.dt>\\n\\s*<dd>(.*)<.");
+                    id.MaidenName = m.Groups[1].Value;
 
-                m = Regex.Match(html_source, "SSN<.dt><dd>(.*?)<div class=");
-                id.SSN = (!string.IsNullOrEmpty(m.Groups[1].Value)) ? m.Groups[1].Value : "N/A";
+                    m = Regex.Match(html_source, "SSN<.dt><dd>(.*?)<div class=");
+                    id.SSN = (!string.IsNullOrEmpty(m.Groups[1].Value)) ? m.Groups[1].Value : "N/A";
 
-                m = Regex.Match(html_source, "Phone<.dt>\\n\\s*<dd>(.*?)<.dd>");
-                id.Phone = m.Groups[1].Value;
+                    m = Regex.Match(html_source, "Phone<.dt>\\n\\s*<dd>(.*?)<.dd>");
+                    id.Phone = m.Groups[1].Value;
 
-                m = Regex.Match(html_source, "Country code<.dt>\\n\\s*<dd>(.*?)<.dd>");
-                id.CountryCode = m.Groups[1].Value;
+                    m = Regex.Match(html_source, "Country code<.dt>\\n\\s*<dd>(.*?)<.dd>");
+                    id.CountryCode = m.Groups[1].Value;
 
-                m = Regex.Match(html_source, "Birthday<.dt>\\n\\s*<dd>(.*?)<.dd>");
-                id.Birthday = m.Groups[1].Value;
-                id.Age = (int)(DateTime.Now - Convert.ToDateTime(id.Birthday)).TotalDays / 365;
+                    m = Regex.Match(html_source, "Birthday<.dt>\\n\\s*<dd>(.*?)<.dd>");
+                    id.Birthday = m.Groups[1].Value;
+                    id.Age = (int)(DateTime.Now - Convert.ToDateTime(id.Birthday)).TotalDays / 365;
 
-                m = Regex.Match(html_source, @"Email Address<.dt>\n\n\s*<dd>(.*?)<div");
-                id.Email = m.Groups[1].Value.Trim();
+                    m = Regex.Match(html_source, @"Email Address<.dt>\n\n\s*<dd>(.*?)<div");
+                    id.Email = m.Groups[1].Value.Trim();
 
-                m = Regex.Match(html_source, @"Username<.dt>\n\s*<dd>(.*?)<.dd>");
-                id.Username = m.Groups[1].Value;
+                    m = Regex.Match(html_source, @"Username<.dt>\n\s*<dd>(.*?)<.dd>");
+                    id.Username = m.Groups[1].Value;
 
-                m = Regex.Match(html_source, @"Password<.dt>\n\s*<dd>(.*?)<.dd>");
-                id.Password = m.Groups[1].Value;
+                    m = Regex.Match(html_source, @"Password<.dt>\n\s*<dd>(.*?)<.dd>");
+                    id.Password = m.Groups[1].Value;
 
-                m = Regex.Match(html_source, @"Website<.dt>\n\s*<dd>(.*?)<.dd>");
-                id.Website = m.Groups[1].Value;
+                    m = Regex.Match(html_source, @"Website<.dt>\n\s*<dd>(.*?)<.dd>");
+                    id.Website = m.Groups[1].Value;
 
-                m = Regex.Match(html_source, @"Browser user agent<.dt>\n\s*<dd>(.*?)<.dd>");
-                id.UserAgent = m.Groups[1].Value;
+                    m = Regex.Match(html_source, @"Browser user agent<.dt>\n\s*<dd>(.*?)<.dd>");
+                    id.UserAgent = m.Groups[1].Value;
 
-                m = Regex.Match(html_source, "Finance</h3>(.*?)</dl>", RegexOptions.Singleline);
-                Match m2 = Regex.Match(m.Groups[1].Value, "<dt>(.*?)<.dt>");
-                m = Regex.Match(m.Groups[1].Value, @"<.dt>\n\s*<dd>(.*?)<.dd>");
-                id.CardNumber = m.Groups[1].Value;
-                id.CardType = m2.Groups[1].Value;
+                    m = Regex.Match(html_source, "Finance</h3>(.*?)</dl>", RegexOptions.Singleline);
+                    Match m2 = Regex.Match(m.Groups[1].Value, "<dt>(.*?)<.dt>");
+                    m = Regex.Match(m.Groups[1].Value, @"<.dt>\n\s*<dd>(.*?)<.dd>");
+                    id.CardNumber = m.Groups[1].Value;
+                    id.CardType = m2.Groups[1].Value;
 
-                m = Regex.Match(html_source, @"<dt>Expires<.dt>\n\s*<dd>(.*?)</dd>");
-                id.CardExpiration = m.Groups[1].Value;
+                    m = Regex.Match(html_source, @"<dt>Expires<.dt>\n\s*<dd>(.*?)</dd>");
+                    id.CardExpiration = m.Groups[1].Value;
 
-                m = Regex.Match(html_source, @"<dt>Company<.dt>\n\s*<dd>(.*?)</dd>");
-                id.Company = m.Groups[1].Value;
+                    m = Regex.Match(html_source, @"<dt>Company<.dt>\n\s*<dd>(.*?)</dd>");
+                    id.Company = m.Groups[1].Value;
 
-                m = Regex.Match(html_source, @"<dt>Occupation<.dt>\n\s*<dd>(.*?)</dd>");
-                id.Occupation = m.Groups[1].Value;
+                    m = Regex.Match(html_source, @"<dt>Occupation<.dt>\n\s*<dd>(.*?)</dd>");
+                    id.Occupation = m.Groups[1].Value;
 
-                m = Regex.Match(html_source, @"<dt>Height<.dt>\n\s*<dd>(.*?)</dd>");
-                id.Height = m.Groups[1].Value;
+                    m = Regex.Match(html_source, @"<dt>Height<.dt>\n\s*<dd>(.*?)</dd>");
+                    id.Height = m.Groups[1].Value;
 
-                m = Regex.Match(html_source, @"<dt>Weight<.dt>\n\s*<dd>(.*?)</dd>");
-                id.Weight = m.Groups[1].Value;
+                    m = Regex.Match(html_source, @"<dt>Weight<.dt>\n\s*<dd>(.*?)</dd>");
+                    id.Weight = m.Groups[1].Value;
 
-                m = Regex.Match(html_source, @"<dt>Blood type<.dt>\n\s*<dd>(.*?)<.dd>");
-                id.BloodType = m.Groups[1].Value;
+                    m = Regex.Match(html_source, @"<dt>Blood type<.dt>\n\s*<dd>(.*?)<.dd>");
+                    id.BloodType = m.Groups[1].Value;
 
-                m = Regex.Match(html_source, @"<dt>Vehicle<.dt>\n\s*<dd>(.*?)<.dd>");
-                id.Vehicle = m.Groups[1].Value;
+                    m = Regex.Match(html_source, @"<dt>Vehicle<.dt>\n\s*<dd>(.*?)<.dd>");
+                    id.Vehicle = m.Groups[1].Value;
+                }
+            }
+            catch(Exception ex)
+            {
+                throw ex;
             }
 
             return id;
