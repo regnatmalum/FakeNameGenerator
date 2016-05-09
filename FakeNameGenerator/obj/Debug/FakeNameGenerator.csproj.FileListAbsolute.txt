@@ -1,0 +1,6 @@
+c:\users\admin\desktop\programming\net\FakeNameGenerator\FakeNameGenerator\bin\Debug\FakeNameGenerator.exe.config
+c:\users\admin\desktop\programming\net\FakeNameGenerator\FakeNameGenerator\obj\Debug\FakeNameGenerator.csprojResolveAssemblyReference.cache
+c:\users\admin\desktop\programming\net\FakeNameGenerator\FakeNameGenerator\bin\Debug\FakeNameGenerator.exe
+c:\users\admin\desktop\programming\net\FakeNameGenerator\FakeNameGenerator\bin\Debug\FakeNameGenerator.pdb
+c:\users\admin\desktop\programming\net\FakeNameGenerator\FakeNameGenerator\obj\Debug\FakeNameGenerator.exe
+c:\users\admin\desktop\programming\net\FakeNameGenerator\FakeNameGenerator\obj\Debug\FakeNameGenerator.pdb
